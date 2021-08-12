@@ -10,7 +10,7 @@ MAX = 175
 MID = 90
 
 
-board = pyfirmata.Arduino('COM7')
+board = pyfirmata.Arduino('COM6')
 
 
 servo = board.get_pin('d:11:s') #11번핀을 서보모터 신호선으로 설정
@@ -30,5 +30,7 @@ move_servo(MAX)
 
 move_servo(MID)
 
+move_servo(MIN)
+move_servo(MAX)
 
 board.exit()
