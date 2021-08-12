@@ -7,7 +7,7 @@ ard = pf.Arduino('COM6')
 
 print('connected.')
 
-
+# dsdgsfgsfgsfgsgf
 # 아날로그핀을 사용하려면 반드시 아래와 같은 두 줄이 필요함.
 
 pf.util.Iterator(ard).start()
