@@ -1,21 +1,18 @@
-#!/usr/bin/env python3
-# 이 프로그램을 수행하기 위해서는 control 가상환경에서 
-# PyAudio, PySpeech, speech_recognition 3개의 패키지를 인스톨 해야 함
-# conda prompt를 열고 control 가상환경을  activate 한 후 
-# (control) > pip install pyspeech speechrecognition
-# (control) > pip install pyaudio 설치시 에러가 발생하면
-# (control) > pip install pipwin  # 가상환경 control의 site-packages에 설치됨
-# (control) > pipwin install pyaudio # 위에서 설치한 pipwin을 사용하여 pyaudio 패키지를 설치함
-# visual studio code 터미널에서 패키지 설치 방법(자신이 만든 가상환경: control:conda)
-# 터미널 창 오른쪽 상단에 있는 + (아래 화살표)를 클릭 -> "command prompt" 클릭 -> 터미널의 환경이 (control) f:XXX (vsc working directory)
-# 로 변경됨. 터미널창에서 상기와 같은 pip install 명령을 수행하면 됨
- 
-
 import speech_recognition as sr  # 패키지 명은 SpeechRecogniton이지만 import 명은 speech_recognition임
+import pyfirmata
+DELAY = 1
+MIN = 5
+MAX = 175
+MID = 90
+board = pyfirmata.Arduino('COM6')
+servo = board.get_pin('d:11:s') # 11번핀을 서보모터 신호선으로 설정
+
+def move_servo(v):                  # 파이선 함수 정의
+    servo.write(v)
+    board.pass_time(DELAY)
 
 # Record Audio
 r = sr.Recognizer()  # sr 패키지의 생성자 Recognizer()를 사용하여 음성인식을 위한 객체 r 을 생성함
-# source = sr.Microphone()
 with sr.Microphone() as source:     # with as 구문을 사용하여 sr의 Microphone() 메소드를 사용하여 source 객제를 생성
     print("Say something!")         # with as 구문을 사용하면 source를 사용한 후 별도로 close() 할 필요가 없음
     audio = r.listen(source)        # 생성된 음성인식 객체 r에서 제공하는 listen() 메소드에 마이크로 지정된 source(with as 구문)를 파라미터로 입력함
@@ -25,8 +22,28 @@ try:
     # for testing purposes, we're just using the default API key
     # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
     # instead of `r.recognize_google(audio)`
-    print("You said: " + r.recognize_google(audio))
+    text = r.recognize_google(audio)
+    print(text)
+    if text.find("right"):
+        move_servo(MIN)
+        move_servo(MID)
+    if text.find("left"):
+        move_servo(MAX)
+        move_servo(MID)
+        #board.exit()
+    #print("You said: " + r.recognize_google(audio))
 except sr.UnknownValueError:
     print("Google Speech Recognition could not understand audio")
 except sr.RequestError as e:
     print("Could not request results from Google Speech Recognition service; {0}".format(e))
+    
+    
+    
+"""
+move_servo(MIN)                     # 위에서 정의된 함수를 호출
+move_servo(MAX)
+move_servo(MID)
+move_servo(MIN)
+move_servo(MAX)
+
+board.exit()                       # 수행종료     """
