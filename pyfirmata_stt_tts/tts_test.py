@@ -9,9 +9,13 @@ import time
 import playsound 
 
 def speak(text):
-    tts = gTTS(text=text, lang='ko')
+    tts = gTTS(lang='ko', text=text ) #ko')
     filename='voice.mp3' 
     tts.save(filename) 
     playsound.playsound(filename) 
 
-speak("안녕하세요. 길동씨")
+speak("나는 지금 파이선 공부를 너무 열심히 하고 있어 ")
+
+"""
+speech to text   stt   text to speech tts
+"""
